@@ -54,6 +54,7 @@ bool descartes_opw_model::OPWMoveitStateAdapter::initialize(const std::string &r
 bool descartes_opw_model::OPWMoveitStateAdapter::getAllIK(const Eigen::Affine3d &pose,
                                                           std::vector<std::vector<double>> &joint_poses) const
 {
+//  ROS_INFO_STREAM("pose\n" << pose.matrix());
   joint_poses.clear();
 
   // Transform input pose
@@ -63,7 +64,7 @@ bool descartes_opw_model::OPWMoveitStateAdapter::getAllIK(const Eigen::Affine3d 
   opw_kinematics::inverse(kin_params_, tool_pose, sols.data());
 
   // Check the output
-  std::vector<double> tmp (6); // temporary storage for API reasons
+  std::vector<double> tmp (7, 0.0); // temporary storage for API reasons
   for (int i = 0; i < 8; i++)
   {
     double* sol = sols.data() + 6 * i;
@@ -75,6 +76,7 @@ bool descartes_opw_model::OPWMoveitStateAdapter::getAllIK(const Eigen::Affine3d 
       std::copy(sol, sol + 6, tmp.data());
       if (isValid(tmp))
       {
+//        ROS_INFO("valid");
         joint_poses.push_back(tmp);
       }
     }
